@@ -78,10 +78,8 @@
 	[self.cameraController release];
 }
 
-- (id)initWithLocationManager:(CLLocationManager *)manager {
-	
+- (id)initWithLocationManager:(CLLocationManager *)manager {	
 	if (!(self = [super init])) return nil;
-	
 	//use the passed in location manager instead of ours.
 	self.locationManager = manager;
 	self.locationManager.delegate = self;

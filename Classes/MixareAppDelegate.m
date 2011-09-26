@@ -135,15 +135,10 @@
 
 
 -(void) iniARView{
-    //if(augViewController == nil){
-        augViewController = [[AugmentedGeoViewController alloc] init];
-    //}
-	
+	augViewController = [[AugmentedGeoViewController alloc] init];
 	augViewController.delegate = self;
-	
 	augViewController.scaleViewsBasedOnDistance = YES;
 	augViewController.minimumScaleFactor = 0.6;
-	
 	augViewController.rotateViewsBasedOnPerspective = YES;
 	
 	[self mapData];
@@ -273,10 +268,10 @@
 	//Adding logic if mixare is called outside by specific url
 	jHandler = [[JsonHandler alloc]init];
 	CLLocation * pos = _locManager.location;
-	NSString * wikiData;
-    NSString * mixareData;
-    NSString * twitterData;
-	NSString * buzzData;
+	NSString   * wikiData;
+    NSString   * mixareData;
+    NSString   * twitterData;
+	NSString   * buzzData;
     float radius = 3.5;
     if(_slider != nil){
         radius = _slider.value;
@@ -346,12 +341,9 @@
 			@finally {
 				
 			}
-			
-			
 		}else {
 			mixareData = nil;
 		}
-		
 		[_data removeAllObjects];
 		if(wikiData != nil){
 			_data= [jHandler processWikipediaJSONData:wikiData];
@@ -374,7 +366,6 @@
 			[mixareData release];
 		}
 //	}
-    
 	[jHandler release];
 }
 
@@ -421,20 +412,18 @@
 #define BOX_HEIGHT 100
 
 - (MarkerView *)viewForCoordinate:(PoiItem *)coordinate {
-	
 	CGRect theFrame = CGRectMake(0, 0, BOX_WIDTH, BOX_HEIGHT);
 	MarkerView *tempView = [[MarkerView alloc] initWithFrame:theFrame];
 	UIImageView *pointView = [[UIImageView alloc] initWithFrame:CGRectZero];
     //tempView.backgroundColor = [UIColor grayColor];
 	if([coordinate.source isEqualToString:@"WIKIPEDIA"]|| [coordinate.source isEqualToString:@"MIXARE"]){
+		NSLog(@"%@", coordinate.source);
 		pointView.image = [UIImage imageNamed:@"circle.png"];
 	}else if([coordinate.source isEqualToString:@"TWITTER"]){
         pointView.image = [UIImage imageNamed:@"twitter_logo.png"];
 	}else if([coordinate.source isEqualToString:@"BUZZ"]){
        pointView.image = [UIImage imageNamed:@"buzz_logo.png"];
 	}
-	
-    
 	pointView.frame = CGRectMake((int)(BOX_WIDTH / 2.0-pointView.image.size.width / 2.0), 0, pointView.image.size.width, pointView.image.size.height);
 	UILabel *titleLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, BOX_HEIGHT / 2.0 , BOX_WIDTH, 20.0)];
 	titleLabel.backgroundColor = [UIColor colorWithWhite:.3 alpha:.8];
