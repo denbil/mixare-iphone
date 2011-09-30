@@ -15,7 +15,7 @@
  * You should have received a copy of the GNU General Public License along with 
  * this program. If not, see <http://www.gnu.org/licenses/> */
 #import "WebViewController.h"
-
+#import "DSActivityView.h"
 
 @implementation WebViewController
 @synthesize url = _url;
@@ -24,12 +24,13 @@
 #pragma mark WebViewDelegate
 - (void)webViewDidStartLoad:(UIWebView *)webView{
     loadView.center = _webView.center;
+	[DSBezelActivityView newActivityViewForView:self.view withLabel:NSLocalizedString(@"Loading webpage", @"") width:100];
     [_webView addSubview:loadView];
 }
 
 //When the webpage has been loaded successfully the loading view will be removed
 - (void)webViewDidFinishLoad:(UIWebView *)webView{
-    [loadView removeFromSuperview];
+    [DSBezelActivityView removeViewAnimated:YES];
 }
 
 

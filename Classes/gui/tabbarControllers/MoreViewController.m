@@ -18,7 +18,7 @@
  */
 
 #import "MoreViewController.h"
-
+#import "iToast.h"
 
 @implementation MoreViewController
 @synthesize loc = _loc;
@@ -39,6 +39,7 @@
     //Will be generate key values in the language files which can be traduced later in every language 
     [tabSwitch setTitle:NSLocalizedString(@"License", nil) forSegmentAtIndex:0];
     [tabSwitch setTitle:NSLocalizedString(@"General Info", nil) forSegmentAtIndex:1];
+	
 }
 
 -(IBAction)switchView:(id) sender{
@@ -51,6 +52,7 @@
         textView.hidden = NO;
         generalInfoView.hidden = YES;
     }
+	[[[[iToast makeText:NSLocalizedString(@"Something to display a very long time", @"")]setGravity:iToastGravityBottom] setDuration:iToastDurationLong] show];
 }
 
 -(IBAction)buttonClick: (id) sender{

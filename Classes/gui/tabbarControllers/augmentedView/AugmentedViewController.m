@@ -55,8 +55,8 @@
 	
 	self.cameraController = [[[UIImagePickerController alloc] init] autorelease];
 	self.cameraController.sourceType = UIImagePickerControllerSourceTypeCamera;
-	CGAffineTransform cameraTransform = CGAffineTransformMakeScale(1.232, 1.232);
-	self.cameraController.cameraViewTransform = cameraTransform;//CGAffineTransformScale(self.cameraController.cameraViewTransform, 1.23f,  1.23f);
+	CGAffineTransform cameraTransform = CGAffineTransformMakeScale(1.0 , 1.255 );
+	self.cameraController.cameraViewTransform = cameraTransform;
 	
 	self.cameraController.showsCameraControls = NO;
 	self.cameraController.navigationBarHidden = YES;
@@ -68,7 +68,7 @@
 	self.rotateViewsBasedOnPerspective = YES;
 	self.maximumRotationAngle = M_PI / 6.0;
 	
-	self.wantsFullScreenLayout = NO;
+	self.wantsFullScreenLayout = YES;
 	oldHeading = 0;
 	return self;
 }
@@ -446,8 +446,9 @@ NSComparisonResult LocationSortClosestFirst(PoiItem *s1, PoiItem *s2, void *igno
 
 - (void)viewDidAppear:(BOOL)animated {
 #if !TARGET_IPHONE_SIMULATOR
+	NSLog(@"in view did appear");
 	[self.cameraController setCameraOverlayView:ar_overlayView];
-	[self presentModalViewController:self.cameraController animated:NO];
+	[self presentModalViewController:self.cameraController animated:YES];
 	
 	[ar_overlayView setFrame:self.cameraController.view.bounds];
 #endif

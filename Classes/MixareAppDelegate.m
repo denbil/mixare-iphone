@@ -23,6 +23,9 @@
 #import "data/JsonHandler.h"
 #import "reality/PhysicalPlace.h"
 #import "data/DataSource.h"
+#import "gui/iToast.h"
+#import "DSActivityView.h"
+
 #define degreesToRadian(x) (M_PI * (x) / 180.0)
  
 
@@ -38,6 +41,7 @@
 @synthesize moreViewController = _moreViewController;
 @synthesize sourceViewController = _sourceViewController;
 @synthesize valueLabel = _valueLabel;
+@synthesize activityView = _activityView;
 
 #pragma mark -
 #pragma  mark URL Handler
@@ -57,9 +61,9 @@
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {    
 	//[window addSubview:_tabBarController.view];
 	[self initLocationManager];
-	//[NSThread detachNewThreadSelector:@selector(downloadData) toTarget:self withObject:nil];
-   
-	[[NSUserDefaults standardUserDefaults] setObject:@"TRUE" forKey:@"Wikipedia"];
+//	[NSThread detachNewThreadSelector:@selector(downloadData) toTarget:self withObject:nil];
+//	[NSThread detachNewThreadSelector:@selector(iniARView) toTarget:self withObject:nil];
+   	[[NSUserDefaults standardUserDefaults] setObject:@"TRUE" forKey:@"Wikipedia"];
    
 	[self downloadData];
 	[self iniARView];
@@ -248,7 +252,11 @@
 		}
 		[augViewController addCoordinates:tempLocationArray];
 		[tempLocationArray release];
-	}else NSLog(@"no data received");
+	}else{
+		NSLog(@"no data received");
+		[[[[iToast makeText:NSLocalizedString(@"No data received", @"")] 
+		   setGravity:iToastGravityBottom] setDuration:iToastDurationNormal] show];
+	}
 }
 
 //Method wich manages the download of data specified by the user. The standard source is wikipedia. By selecting the different sources in the sources
@@ -296,10 +304,12 @@
 		//Application is called normally
 		if([self checkIfDataSourceIsEanabled:@"Wikipedia"]){
 			NSLog(@"Downloading WIki data");
+//			[[[[iToast makeText:NSLocalizedString(@"Downloading Wiki data", @"")] setGravity:iToastGravityBottom] setDuration:iToastDurationLong] show];
 			NSString   *language = [[NSLocale preferredLanguages] objectAtIndex:0];
 			NSLog(@"Language: %@",language);
 			wikiData = [[NSString alloc]initWithContentsOfURL:[NSURL URLWithString:[DataSource createRequestURLFromDataSource:@"WIKIPEDIA" Lat:pos.coordinate.latitude Lon:pos.coordinate.longitude Alt:pos.altitude radius:radius Lang:language]] encoding:NSUTF8StringEncoding error:nil];
 			NSLog(@"Download done");
+//			[[[[iToast makeText:NSLocalizedString(@"Wiki data recievde - done", @"")] setGravity:iToastGravityBottom] setDuration:iToastDurationLong] show];
 		}else {
 			wikiData = nil;
 		}
@@ -372,7 +382,7 @@
 -(void)valueChanged:(id)sender{
 	NSLog(@"val: %f",_slider.value);
     _valueLabel.text = [NSString stringWithFormat:@"%f", _slider.value];
-    [[NSUserDefaults standardUserDefaults] setObject:[NSString stringWithFormat:@"%f", _slider.value]  forKey:@"radius"];
+	[[NSUserDefaults standardUserDefaults] setObject:[NSString stringWithFormat:@"%f", _slider.value]  forKey:@"radius"];
 	[augViewController removeCoordinates:_data];
 	[self downloadData];
     [self iniARView];
@@ -417,7 +427,6 @@
 	UIImageView *pointView = [[UIImageView alloc] initWithFrame:CGRectZero];
     //tempView.backgroundColor = [UIColor grayColor];
 	if([coordinate.source isEqualToString:@"WIKIPEDIA"]|| [coordinate.source isEqualToString:@"MIXARE"]){
-		NSLog(@"%@", coordinate.source);
 		pointView.image = [UIImage imageNamed:@"circle.png"];
 	}else if([coordinate.source isEqualToString:@"TWITTER"]){
         pointView.image = [UIImage imageNamed:@"twitter_logo.png"];
@@ -494,13 +503,15 @@
 // Optional UITabBarControllerDelegate method.
 - (void)tabBarController:(UITabBarController *)tabBarController didSelectViewController:(UIViewController *)viewController {
 	if(tabBarController.tabBar.selectedItem.title ==@"Camera"){
-		NSLog(@"cam mode on ");
+		
 		//[self.locManager startUpdatingHeading];
 	}else{
 		//[self.locManager stopUpdatingHeading];
 	}
     
     if(tabBarController.selectedIndex == 0 ){
+		NSLog(@"cam mode on ");
+		[DSBezelActivityView newActivityViewForView:viewController.view withLabel:NSLocalizedString(@"Downloading Data", @"") width:80];
         notificationView.center = window.center;
         [window addSubview:notificationView];
 		[augViewController removeCoordinates:_data];
@@ -509,6 +520,7 @@
         [augViewController startListening];
         [[UIDevice currentDevice] beginGeneratingDeviceOrientationNotifications];
         [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(didRotate:) name:@"UIDeviceOrientationDidChangeNotification" object:nil];
+		[DSBezelActivityView removeViewAnimated:YES];
 	}else{
         [augViewController.locationManager stopUpdatingHeading];
         [augViewController.locationManager stopUpdatingLocation];

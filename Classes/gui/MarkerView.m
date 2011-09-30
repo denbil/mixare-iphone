@@ -18,7 +18,7 @@
  */
 
 #import "MarkerView.h"
-
+#import "DSActivityView.h"
 
 @implementation MarkerView
 
@@ -52,20 +52,21 @@
     closeButton.titleLabel.textColor = [UIColor blackColor];
     CGRect infoFrame;
     CGRect webFrame;
-	CGRect buttobFrame;
+//	CGRect buttobFrame;
     if([[UIDevice currentDevice] orientation] == UIDeviceOrientationPortrait){
         infoFrame = CGRectMake(0, 480, 0, 0);
         webFrame = CGRectMake(0, 25, 320, 220);
         closeButton.frame = CGRectMake(260, 0, 60, 25);
-		buttobFrame= CGRectMake(0, 0, 320, 240);
+//		buttobFrame= CGRectMake(0, 0, 320, 240);
     }else{
         closeButton.frame = CGRectMake(420, 0, 60, 25);
         infoFrame = CGRectMake(0, 320, 0, 0);
         webFrame = CGRectMake(0, 25, 480, 160);
-		buttobFrame= CGRectMake(0, 0, 480, 160);
+//		buttobFrame= CGRectMake(0, 0, 480, 160);
     }
     UIView * infoView = [[UIView alloc]initWithFrame:infoFrame];
     UIWebView * webView = [[UIWebView alloc]initWithFrame:webFrame];
+	[webView.delegate self];
     webView.alpha = .7;
     [infoView addSubview:webView];
     NSURL *requestURL = [NSURL URLWithString:_url];
@@ -112,6 +113,15 @@
     [viewTouched release];
 }
 
+#pragma mark WebViewDelegate
+- (void)webViewDidStartLoad:(UIWebView *)webView{
+	[DSBezelActivityView newActivityViewForView:webView withLabel:NSLocalizedString(@"Loading webpage", @"") width:100];
+}
+
+//When the webpage has been loaded successfully the loading view will be removed
+- (void)webViewDidFinishLoad:(UIWebView *)webView{
+    [DSBezelActivityView removeViewAnimated:YES];
+}
 
 #pragma mark WebViewDelegate
 /*- (void)webViewDidStartLoad:(UIWebView *)webView{

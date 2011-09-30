@@ -28,6 +28,7 @@
 #import "Radar.h"
 #import "MoreViewController.h"
 #import "SourceViewController.h"
+#import "DSActivityView.h"
 
 @interface MixareAppDelegate : NSObject <UIApplicationDelegate, UITabBarControllerDelegate,ARViewDelegate, CLLocationManagerDelegate>{
     UIWindow *window;
@@ -37,6 +38,7 @@
 	ListViewController * _listViewController;
 	MapViewController * _mapViewController;
 	AugmentedGeoViewController *augViewController;
+	DSActivityView * _activityView;
 	NSMutableArray * _data;
 	JsonHandler * jHandler;
 	UISlider * _slider;
@@ -64,7 +66,7 @@
 @property (nonatomic, retain) IBOutlet MoreViewController *moreViewController;
 @property (nonatomic, retain) IBOutlet SourceViewController * sourceViewController;
 @property (nonatomic, retain) IBOutlet UILabel * valueLabel;
-
+@property (nonatomic, retain) IBOutlet DSActivityView * activityView;
 
 -(void) iniARView;
 - (MarkerView *)viewForCoordinate:(PoiItem *)coordinate;
